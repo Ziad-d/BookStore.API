@@ -1,4 +1,5 @@
 using BookStore.API.Repositories;
+using Microsoft.EntityFrameworkCore;
 
 namespace BookStore.API
 {
@@ -16,7 +17,9 @@ namespace BookStore.API
             builder.Services.AddSwaggerGen();
 
             builder.Services.AddTransient<IBookRepository, BookRepository>();
-
+            builder.Services.AddDbContext<ApplicationDbContext>(options =>
+                options.UseSqlServer(builder.Configuration.GetConnectionString("BookDbConnection")));
+            
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
