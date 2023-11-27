@@ -11,9 +11,18 @@ namespace BookStore.API.Repositories
         {
             this.context = context;
         }
+
         public async Task<List<Book>> GetAllBooksAsync()
         {
             return await context.Books.ToListAsync();
+        }
+
+        public async Task<Book> GetBookByIdAsync(int id)
+        {
+            var book = await context.Books.FindAsync(id);
+            if (book == null)
+                return null;
+            return book;
         }
     }
 }
