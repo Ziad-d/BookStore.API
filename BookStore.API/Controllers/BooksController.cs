@@ -1,4 +1,6 @@
-﻿using BookStore.API.Repositories;
+﻿using BookStore.API.DTOs.BooksDTO;
+using BookStore.API.Models;
+using BookStore.API.Repositories;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -29,10 +31,32 @@ namespace BookStore.API.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetBookById([FromRoute]int id)
         {
-            var result = await bookRepository.GetBookByIdAsync(id);
+            var book = await bookRepository.GetBookByIdAsync(id);
+
+            if (book == null)
+                return NotFound();
+
+            return Ok(book);
+        }
+
+        [HttpPost("")]
+        public async Task<IActionResult> AddNewBook([FromBody]InputBookDTO bookDTO)
+        {
+            var result = await bookRepository.AddBookAsync(bookDTO);
 
             if (result == null)
-                return NotFound();
+                return NotFound("Cannot create one");
+
+            return Ok(result);
+        }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateBook([FromBody] UpdateBookDTO bookDTO, [FromRoute] int id)
+        {
+            var result = await bookRepository.UpdateBook(bookDTO, id);
+
+            if (result == null) 
+                return NotFound("Can't Update");
 
             return Ok(result);
         }

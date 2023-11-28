@@ -1,4 +1,5 @@
-﻿using BookStore.API.Models;
+﻿using BookStore.API.DTOs.BooksDTO;
+using BookStore.API.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace BookStore.API.Repositories
@@ -23,6 +24,38 @@ namespace BookStore.API.Repositories
             if (book == null)
                 return null;
             return book;
+        }
+
+        public async Task<Book> AddBookAsync(InputBookDTO book)
+        {
+            Book newBook = new Book()
+            {
+                Title = book.Title,
+                Description = book.Description
+            };
+
+            context.Books.Add(newBook);
+            await context.SaveChangesAsync();
+            
+            return newBook;
+        }
+
+        public async Task<Book> UpdateBook(UpdateBookDTO book, int id)
+        {
+            var foundBook = await context.Books.FindAsync(id);
+            if (foundBook == null)
+                return null;
+
+            foundBook.Title = (book.Title == null) ? foundBook.Title : book.Title;
+            foundBook.Description = (book.Description == null) ? foundBook.Description : book.Description;
+
+            context.Books.Update(foundBook);
+
+            var result = await context.SaveChangesAsync();
+            if (result == 0)
+                return null;
+
+            return foundBook;
         }
     }
 }
