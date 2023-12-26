@@ -1,5 +1,6 @@
 ﻿using BookStore.API.DTOs.BooksDTO;
 using BookStore.API.Models;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace BookStore.API.Repositories
@@ -40,7 +41,7 @@ namespace BookStore.API.Repositories
             return newBook;
         }
 
-        public async Task<Book> UpdateBook(UpdateBookDTO book, int id)
+        public async Task<Book> UpdateBookAsync(UpdateBookDTO book, int id)
         {
             var foundBook = await context.Books.FindAsync(id);
             if (foundBook == null)
@@ -56,6 +57,15 @@ namespace BookStore.API.Repositories
                 return null;
 
             return foundBook;
+        }
+
+        public async Task DeleteBookAsync(int id)
+        {
+            var foundBook = new Book() { Id = id };
+
+            context.Books.Remove(foundBook);
+            
+            await context.SaveChangesAsync();
         }
     }
 }

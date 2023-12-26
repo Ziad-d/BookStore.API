@@ -53,12 +53,20 @@ namespace BookStore.API.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateBook([FromBody] UpdateBookDTO bookDTO, [FromRoute] int id)
         {
-            var result = await bookRepository.UpdateBook(bookDTO, id);
+            var result = await bookRepository.UpdateBookAsync(bookDTO, id);
 
             if (result == null) 
                 return NotFound("Can't Update");
 
             return Ok(result);
         }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteBook([FromRoute] int id)
+        {
+            await bookRepository.DeleteBookAsync(id);
+            return Ok();
+        }
+
     }
 }
